@@ -1,0 +1,11 @@
+# Python caches of the tests
+__pycache__/
+*.pyc
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+*~
+.*.swp
+.vscode/
+.idea/
