@@ -12,7 +12,7 @@ import { createAi } from './ai.js?v=9';
 import { createMcp } from './mcp.js?v=4';
 import { createAiStatus } from './aistatus.js?v=9';
 import { startConvert } from './convert-to.js?v=15';
-import { createSync } from './sync.js?v=24';
+import { createSync } from './sync.js?v=25';
 import { store } from './files.js?v=8';
 import { checkXmlCode, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
 import { formatXml } from './xml-format.js?v=4';
@@ -21,7 +21,7 @@ import { readTreeNow, renderPreview } from './preview.js?v=5';
 import { createTemplateExamples } from './template-examples.js?v=2';
 import { undo } from './history.js?v=5';
 import { openDocument } from './documents.js?v=5';
-import { receiveDocument, importExternalDocument } from './incoming.js?v=5';
+import { receiveDocument, importExternalDocument } from './incoming.js?v=6';
 import { runQueryTool, setTextByXpath, setAttributeByXpath, updateCodeText, showLine, getFileList, openFileByName, createFile } from './mcp-actions.js?v=5';
 import { showToast } from './toast.js?v=2';
 

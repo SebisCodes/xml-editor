@@ -7,7 +7,7 @@
  */
 
 import { state, elements } from './state.js?v=2';
-import { VIEWER } from './sync.js?v=24';
+import { VIEWER } from './sync.js?v=25';
 import { parseCodeNodes, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
 import { store } from './files.js?v=8';
 import { applyEdits } from './history.js?v=5';

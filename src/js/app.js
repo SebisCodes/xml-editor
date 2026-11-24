@@ -17,7 +17,7 @@
  *   5. the hook window.xmlEditor for the automated tests.
  */
 
-import { createI18n } from './i18n.js?v=24';
+import { createI18n } from './i18n.js?v=25';
 import { createWrap } from './wrap.js?v=5';
 import './export-menu.js?v=6';
 import { state, elements, services } from './state.js?v=2';
@@ -41,8 +41,8 @@ import { startKeyboard } from './keyboard.js?v=5';
 import { startLayout, showSplit } from './layout.js?v=5';
 import { startExport } from './export-dialog.js?v=5';
 import { showFileName, openChosenDocument, createFromMenu, renameDocument, closeDeletedDocument } from './documents.js?v=5';
-import { receiveDocument } from './incoming.js?v=5';
-import { startAssistants } from './assistants.js?v=5';
+import { receiveDocument } from './incoming.js?v=6';
+import { startAssistants } from './assistants.js?v=6';
 import { showToast } from './toast.js?v=2';
 import { startTemplateControls } from './template-panel.js?v=2';
 
