@@ -9,10 +9,10 @@ import { state, elements, translate } from './state.js?v=2';
 import { escapeHtml } from './xml.js?v=7';
 import { getPath } from './xml-paths.js?v=2';
 import { getNodeText, getShownChildren } from './nodes.js?v=4';
-import { getLineIndex } from './code-view.js?v=4';
+import { getLineIndex } from './code-view.js?v=5';
 import { getTreeEdit } from './tree-edit-changes.js?v=4';
-import { applyEdits } from './history.js?v=4';
-import { removeNode, runTreeAction } from './tree-actions.js?v=4';
+import { applyEdits } from './history.js?v=5';
+import { removeNode, runTreeAction } from './tree-actions.js?v=5';
 
 const KIND_TITLES = { el: 'Element', text: 'Text', comment: 'Comment', cdata: 'CDATA section', pi: 'Processing instruction', doctype: 'DOCTYPE' };
 

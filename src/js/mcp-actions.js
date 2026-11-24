@@ -11,11 +11,11 @@ import { XML_NAME, escapeText, escapeAttribute } from './xml.js?v=7';
 import { getPath } from './xml-paths.js?v=2';
 import { getAttributesEnd } from './nodes.js?v=4';
 import { store } from './files.js?v=8';
-import { applyEdits } from './history.js?v=4';
-import { getLineIndex, getLineStart, showInCode } from './code-view.js?v=4';
-import { findByXpath } from './search.js?v=4';
-import { selectFromCursor } from './tree.js?v=4';
-import { openDocument, createDocument, getBlankDocument } from './documents.js?v=4';
+import { applyEdits } from './history.js?v=5';
+import { getLineIndex, getLineStart, showInCode } from './code-view.js?v=5';
+import { findByXpath } from './search.js?v=5';
+import { selectFromCursor } from './tree.js?v=5';
+import { openDocument, createDocument, getBlankDocument } from './documents.js?v=5';
 
 const NOT_WELL_FORMED = 'The document is not well-formed - call get_problems.';
 const MATCHES_LISTED = 200;

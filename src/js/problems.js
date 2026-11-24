@@ -6,9 +6,9 @@
 
 import { state, elements, isNarrow } from './state.js?v=2';
 import { escapeHtml } from './xml.js?v=7';
-import { getLineIndex, getColumnIndex, showInCode } from './code-view.js?v=4';
-import { selectFromCursor } from './tree.js?v=4';
-import { showPane } from './layout.js?v=4';
+import { getLineIndex, getColumnIndex, showInCode } from './code-view.js?v=5';
+import { selectFromCursor } from './tree.js?v=5';
+import { showPane } from './layout.js?v=5';
 
 const PROBLEMS_SHOWN = 60;
 

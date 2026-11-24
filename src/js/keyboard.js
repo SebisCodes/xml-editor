@@ -5,11 +5,11 @@
  */
 
 import { elements, services, findElement, isNarrow } from './state.js?v=2';
-import { undo, redo } from './history.js?v=4';
-import { openExport, saveQuickly } from './export-dialog.js?v=4';
-import { showPane } from './layout.js?v=4';
-import { isNewMenuOpen, applyNewMenuSwitch } from './toolbar.js?v=4';
-import { TYPING_FIELDS } from './file-input.js?v=4';
+import { undo, redo } from './history.js?v=5';
+import { openExport, saveQuickly } from './export-dialog.js?v=5';
+import { showPane } from './layout.js?v=5';
+import { isNewMenuOpen, applyNewMenuSwitch } from './toolbar.js?v=5';
+import { TYPING_FIELDS } from './file-input.js?v=5';
 import { openDialog } from './dialogs.js?v=5';
 
 /** The keys of the shortcuts with Ctrl or Cmd, as KeyboardEvent.key gives them. */

@@ -7,9 +7,9 @@
 
 import { state, elements, services, findElement, translate } from './state.js?v=2';
 import { getMinifiedXml, getPlainText, convertToJson, convertToYaml } from './xml-format.js?v=4';
-import { readTreeNow } from './preview.js?v=4';
+import { readTreeNow } from './preview.js?v=5';
 import { TEMPLATE_SYNTAX } from './xml-template.js?v=1';
-import { isEditing, stopTreeEdit } from './tree-edit.js?v=4';
+import { isEditing, stopTreeEdit } from './tree-edit.js?v=5';
 import { openDialog } from './dialogs.js?v=5';
 import { createZip } from './zip.js?v=4';
 import { saveDownload, getSafeName, copyToClipboard } from './util.js?v=3';

@@ -7,7 +7,7 @@
 
 import { state, elements, findElement, translate } from './state.js?v=2';
 import { getNodeText, getRowNode } from './nodes.js?v=4';
-import { renderTree, showTreeMarks, selectNode, openParents } from './tree.js?v=4';
+import { renderTree, showTreeMarks, selectNode, openParents } from './tree.js?v=5';
 
 const SEARCH_DELAY = 200;               // milliseconds after the last key stroke
 const QUERY_DELAY = 350;

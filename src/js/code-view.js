@@ -9,8 +9,8 @@ import { escapeHtml } from './xml.js?v=7';
 import { highlight } from './xml-highlight.js?v=4';
 import { buildHighlightWithTemplateTags, convertTemplateTagsToBraces } from './template-tags.js?v=2';
 import { TEMPLATE_SYNTAX } from './xml-template.js?v=1';
-import { updateHistoryButtons } from './history.js?v=4';
-import { selectFromCursor } from './tree.js?v=4';
+import { updateHistoryButtons } from './history.js?v=5';
+import { selectFromCursor } from './tree.js?v=5';
 
 const LINE_HEIGHT = 20;                 // pixels per row of the code
 const HIGHLIGHT_LIMIT = 600000;         // longer code is shown without colors

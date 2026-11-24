@@ -301,7 +301,8 @@ def check_box(page, frame):
 
 
 def check_panel(frame):
-    """Checks that the side panel is closed at the start and its button keeps its place.
+    """Checks that the side panel is closed at the start, that it opens as a column right of the
+    tree and that its button keeps its place.
 
     Args:
         frame (Frame): the editor's frame.
@@ -316,7 +317,9 @@ def check_panel(frame):
     button.click()
     opened = frame.evaluate("() => getComputedStyle(document.querySelector('#side-panel')).display")
     check_that(shown == 'none' and opened != 'none', f'the side panel is closed at the start and opens ({shown} -> {opened})')
-    check_that(button.bounding_box() == place and frame.locator('.draw-pane').bounding_box() == tree_box, 'the panel opens over the tree, its button stays in its place')
+    narrowed, panel = frame.locator('.draw-pane').bounding_box(), frame.locator('#side-panel').bounding_box()
+    check_that(button.bounding_box() == place and narrowed['width'] < tree_box['width']
+               and abs(narrowed['x'] + narrowed['width'] - panel['x']) <= 1, 'the open panel is a column right of the tree, which gets narrower; its button stays in its place')
     button.click()
 
 

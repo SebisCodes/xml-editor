@@ -17,34 +17,34 @@
  *   5. the hook window.xmlEditor for the automated tests.
  */
 
-import { createI18n } from './i18n.js?v=23';
+import { createI18n } from './i18n.js?v=24';
 import { createWrap } from './wrap.js?v=5';
 import './export-menu.js?v=6';
 import { state, elements, services } from './state.js?v=2';
 import { store, createFiles } from './files.js?v=8';
 import { START } from './samples.js?v=3';
-import { startAutosave, getStoredSettings, setSavedCode } from './autosave.js?v=4';
-import { startCodeView, renderCode, syncLayerScroll, showInCode } from './code-view.js?v=4';
-import { setCode, addHistoryStep, undo, redo } from './history.js?v=4';
-import { renderPreview, findNodeByPath } from './preview.js?v=4';
-import { createTreeArea, renderTree, selectNode } from './tree.js?v=4';
-import { startTreeEditing } from './tree-edit.js?v=4';
-import { startSearch, findByXpath } from './search.js?v=4';
-import { startProblems } from './problems.js?v=4';
-import { startTyping } from './typing.js?v=4';
-import { startNodePanel } from './node-panel.js?v=4';
-import { startInsertPanel } from './insert-panel.js?v=4';
-import { startConvertPanel } from './conversion-panel.js?v=4';
-import { startToolbar } from './toolbar.js?v=4';
-import { startFileInput, openFileDialog } from './file-input.js?v=4';
-import { startKeyboard } from './keyboard.js?v=4';
-import { startLayout, showSplit } from './layout.js?v=4';
-import { startExport } from './export-dialog.js?v=4';
-import { showFileName, openChosenDocument, createFromMenu, renameDocument, closeDeletedDocument } from './documents.js?v=4';
-import { receiveDocument } from './incoming.js?v=4';
-import { startAssistants } from './assistants.js?v=4';
+import { startAutosave, getStoredSettings, setSavedCode } from './autosave.js?v=5';
+import { startCodeView, renderCode, syncLayerScroll, showInCode } from './code-view.js?v=5';
+import { setCode, addHistoryStep, undo, redo } from './history.js?v=5';
+import { renderPreview, findNodeByPath } from './preview.js?v=5';
+import { createTreeArea, renderTree, selectNode } from './tree.js?v=5';
+import { startTreeEditing } from './tree-edit.js?v=5';
+import { startSearch, findByXpath } from './search.js?v=5';
+import { startProblems } from './problems.js?v=5';
+import { startTyping } from './typing.js?v=5';
+import { startNodePanel } from './node-panel.js?v=5';
+import { startInsertPanel } from './insert-panel.js?v=5';
+import { startConvertPanel } from './conversion-panel.js?v=5';
+import { startToolbar } from './toolbar.js?v=5';
+import { startFileInput, openFileDialog } from './file-input.js?v=5';
+import { startKeyboard } from './keyboard.js?v=5';
+import { startLayout, showSplit } from './layout.js?v=5';
+import { startExport } from './export-dialog.js?v=5';
+import { showFileName, openChosenDocument, createFromMenu, renameDocument, closeDeletedDocument } from './documents.js?v=5';
+import { receiveDocument } from './incoming.js?v=5';
+import { startAssistants } from './assistants.js?v=5';
 import { showToast } from './toast.js?v=2';
-import { startTemplateControls } from './template-panel.js?v=1';
+import { startTemplateControls } from './template-panel.js?v=2';
 
 const PREFIX = 'xmleditor';
 const GERMAN = 'de';

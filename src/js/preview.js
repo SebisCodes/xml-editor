@@ -16,15 +16,15 @@
 import { state, elements } from './state.js?v=2';
 import { checkXmlCode, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
 import { createLinker, createNamespaceResolver } from './xml-paths.js?v=2';
-import { renderTree } from './tree.js?v=4';
-import { isEditing, stopTreeEdit } from './tree-edit.js?v=4';
-import { updateQueryHits, updateSearchFound } from './search.js?v=4';
-import { renderProblems } from './problems.js?v=4';
-import { renderCode } from './code-view.js?v=4';
-import { renderNodePanel } from './node-panel.js?v=4';
-import { renderConvertPanel } from './conversion-panel.js?v=4';
+import { renderTree } from './tree.js?v=5';
+import { isEditing, stopTreeEdit } from './tree-edit.js?v=5';
+import { updateQueryHits, updateSearchFound } from './search.js?v=5';
+import { renderProblems } from './problems.js?v=5';
+import { renderCode } from './code-view.js?v=5';
+import { renderNodePanel } from './node-panel.js?v=5';
+import { renderConvertPanel } from './conversion-panel.js?v=5';
 import { setShownTree } from './tree-views.js?v=1';
-import { renderTemplateControls } from './template-panel.js?v=1';
+import { renderTemplateControls } from './template-panel.js?v=2';
 
 const LARGE_DOCUMENT = 1500;            // more elements than this: the tree opens folded below the second level
 const LARGE_DOCUMENT_DEPTH = 2;

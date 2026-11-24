@@ -1,15 +1,15 @@
 /**
  * The layout of the work area: the splitter between code and tree (dragged or moved with
  * the arrow keys, remembered), the views of a narrow screen (code, tree or panel, one at a
- * time), the side panel (a drawer on the desktop, closed at the start) and its tabs (Node,
+ * time), the side panel (a column on the desktop, closed at the start) and its tabs (Node,
  * Insert, Convert).
  */
 
 import { state, elements, findElement, findElements } from './state.js?v=2';
-import { syncLayerScroll } from './code-view.js?v=4';
-import { saveDocument } from './autosave.js?v=4';
-import { renderNodePanel } from './node-panel.js?v=4';
-import { renderConvertPanel } from './conversion-panel.js?v=4';
+import { syncLayerScroll } from './code-view.js?v=5';
+import { saveDocument } from './autosave.js?v=5';
+import { renderNodePanel } from './node-panel.js?v=5';
+import { renderConvertPanel } from './conversion-panel.js?v=5';
 
 const SPLIT_MIN = 0.15;
 const SPLIT_MAX = 0.85;
@@ -27,40 +27,16 @@ export function startLayout() {
     findElements('[data-itab]').forEach(button => button.addEventListener('click', () => showPanelTab(button)));
     showSidePanel(false);
     findElement('#btn-panel').addEventListener('click', () => showSidePanel(elements.work.dataset.panel !== 'open'));
-    findElement('#side-panel').addEventListener('keydown', closeSidePanelOnEscape);
-    watchDrawerTop();
 }
 
 /**
- * Opens or closes the side panel's drawer.
+ * Opens or closes the side panel's column.
  * @param {boolean} isOpen - true to open it.
  * @returns {void}
  */
 export function showSidePanel(isOpen) {
     elements.work.dataset.panel = isOpen ? 'open' : 'closed';
     findElement('#btn-panel').setAttribute('aria-expanded', String(isOpen));
-}
-
-/**
- * Keeps the place of the main view below its bars in --drawer-top of the work area, so the
- * drawer opens below the bars and leaves their tools within reach.
- * @returns {void}
- */
-function watchDrawerTop() {
-    const stage = findElement('#stage');
-    const observer = new ResizeObserver(() => elements.work.style.setProperty('--drawer-top', stage.getBoundingClientRect().top - elements.work.getBoundingClientRect().top + 'px'));
-    for (const bar of stage.parentElement.children) if (bar !== stage) observer.observe(bar);
-}
-
-/**
- * Closes the side panel's drawer with Escape inside it and puts the focus on its button.
- * @param {KeyboardEvent} event - the key in the side panel.
- * @returns {void}
- */
-function closeSidePanelOnEscape(event) {
-    if (event.key !== 'Escape' || elements.work.dataset.panel !== 'open' || event.target.closest('dialog')) return;
-    showSidePanel(false);
-    findElement('#btn-panel').focus();
 }
 
 /**
@@ -90,7 +66,7 @@ export function showSplit() {
 function moveSplitterWithPointer(event, splitter) {
     splitter.setPointerCapture(event.pointerId);
     const workBox = elements.work.getBoundingClientRect();
-    const available = workBox.width - splitter.offsetWidth;
+    const available = workBox.width - findElement('.inspector').offsetWidth - splitter.offsetWidth;
     /**
      * Moves the splitter to the pointer.
      * @param {PointerEvent} moveEvent - the pointer's move.

@@ -15,8 +15,8 @@
 
 import { state, elements, isTreeCurrent } from './state.js?v=2';
 import { getTreeEdit, getTreeEditRefusal } from './tree-edit-changes.js?v=4';
-import { applyEdits } from './history.js?v=4';
-import { selectNode } from './tree.js?v=4';
+import { applyEdits } from './history.js?v=5';
+import { selectNode } from './tree.js?v=5';
 import { showToast } from './toast.js?v=2';
 import { isCopiedTreePart, EXAMPLE_PART_NOTE } from './tree-views.js?v=1';
 

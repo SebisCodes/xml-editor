@@ -9,9 +9,9 @@ import { state, elements, findElement } from './state.js?v=2';
 import { escapeHtml } from './xml.js?v=7';
 import { formatXml, getMinifiedXml, convertToJson, convertToYaml } from './xml-format.js?v=4';
 import { getIndentUnit } from './nodes.js?v=4';
-import { readTreeNow } from './preview.js?v=4';
+import { readTreeNow } from './preview.js?v=5';
 import { TEMPLATE_SYNTAX } from './xml-template.js?v=1';
-import { applyEdits } from './history.js?v=4';
+import { applyEdits } from './history.js?v=5';
 import { showToast } from './toast.js?v=2';
 import { saveDownload, getSafeName, copyToClipboard } from './util.js?v=3';
 

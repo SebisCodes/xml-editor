@@ -10,8 +10,8 @@ import { state, elements } from './state.js?v=2';
 import { VIEWER } from './sync.js?v=24';
 import { parseCodeNodes, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
 import { store } from './files.js?v=8';
-import { applyEdits } from './history.js?v=4';
-import { openDocument, createDocument, getBlankDocument } from './documents.js?v=4';
+import { applyEdits } from './history.js?v=5';
+import { openDocument, createDocument, getBlankDocument } from './documents.js?v=5';
 import { showToast } from './toast.js?v=2';
 
 const AI_DOCUMENT_NAME = 'AI document';

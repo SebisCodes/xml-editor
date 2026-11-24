@@ -9,11 +9,11 @@
 import { state, elements, services } from './state.js?v=2';
 import { parseCodeNodes, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
 import { getIndentUnit, getIndentAt } from './nodes.js?v=4';
-import { renderCode } from './code-view.js?v=4';
-import { startRenderSoon } from './preview.js?v=4';
-import { addHistoryStep, startHistoryStep, undo, redo } from './history.js?v=4';
-import { startSaveSoon } from './autosave.js?v=4';
-import { selectFromCursor } from './tree.js?v=4';
+import { renderCode } from './code-view.js?v=5';
+import { startRenderSoon } from './preview.js?v=5';
+import { addHistoryStep, startHistoryStep, undo, redo } from './history.js?v=5';
+import { startSaveSoon } from './autosave.js?v=5';
+import { selectFromCursor } from './tree.js?v=5';
 
 const RENDER_DELAY = 280;               // milliseconds after the last key stroke before the tree is read
 const LARGE_CODE_RENDER_DELAY = 600;

@@ -40,7 +40,8 @@ attribute, move the element up or down, or remove it.
 
 The side panel has **Node** (the selected node), **Insert** (ready-made pieces) and
 **Convert** (format, minify, JSON, YAML). The button at the top right of the work area opens it
-over the tree and closes it again (Escape too); it is closed when the editor opens. On a phone it
+as a column right of the tree, which gets narrower, and closes it again; it is closed when the
+editor opens. On a phone it
 is the view **Edit**.
 
 ## Templates with placeholders

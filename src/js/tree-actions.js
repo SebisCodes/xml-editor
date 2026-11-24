@@ -8,9 +8,9 @@
 import { state, isTreeCurrent } from './state.js?v=2';
 import { getPath } from './xml-paths.js?v=2';
 import { getShownChildren, getAttributesEnd, getIndentUnit, getIndentAt, getElementCountBefore, getLineRange } from './nodes.js?v=4';
-import { applyEdits } from './history.js?v=4';
-import { selectNode } from './tree.js?v=4';
-import { startEditAfterRender } from './tree-edit.js?v=4';
+import { applyEdits } from './history.js?v=5';
+import { selectNode } from './tree.js?v=5';
+import { startEditAfterRender } from './tree-edit.js?v=5';
 import { showToast } from './toast.js?v=2';
 import { isWholeTreeNode, EXAMPLE_PART_NOTE } from './tree-views.js?v=1';
 
