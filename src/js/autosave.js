@@ -10,8 +10,8 @@
 import { state, services } from './state.js?v=2';
 import { store } from './files.js?v=8';
 import { showToast } from './toast.js?v=2';
-import { showFileName } from './documents.js?v=3';
-import { setCode } from './history.js?v=3';
+import { showFileName } from './documents.js?v=4';
+import { setCode } from './history.js?v=4';
 
 const SETTINGS_KEY = 'xmleditor.v1';
 const SAVE_DELAY = 400;                 // milliseconds after the last key stroke

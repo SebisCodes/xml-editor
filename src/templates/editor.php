@@ -28,9 +28,9 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="/img/logo.svg">
-<link rel="stylesheet" href="/css/style.css?v=25">
+<link rel="stylesheet" href="/css/style.css?v=26">
 <script src="/js/lang-menu.js?v=1" defer></script>
-<script src="/js/theme.js?v=9" data-editor-page></script>
+<script src="/js/theme.js?v=10" data-editor-page></script>
 <script type="application/ld+json"><?= get_json_ld('jsonld') ?></script>
 </head>
 <body>
@@ -106,6 +106,10 @@
                 <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="XML code"></textarea>
             </div>
         </div>
+        <div id="placeholder-box" class="placeholder-box template-control">
+            <div id="placeholder-list" class="placeholder-list" data-placeholder-list role="group" aria-label="Placeholders" hidden></div>
+            <button type="button" class="placeholder-header" data-placeholder-toggle aria-expanded="false" aria-controls="placeholder-list" title="The placeholders of the template - a click on one puts its tag at the cursor"><svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg><span>Placeholders</span><span class="placeholder-count" data-placeholder-count data-no-i18n></span></button>
+        </div>
     </section>
 
     <div id="splitter" class="splitter" role="separator" aria-orientation="vertical" aria-label="Drag to change the width of the code area" title="Drag to change the width" tabindex="0"></div>
@@ -122,15 +126,22 @@
                 <button type="button" class="tool" id="fold-all" title="Fold everything below the root" aria-label="Fold all"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 15 5-5 5 5"/><path d="M5 20h14"/></svg></button>
                 <button type="button" class="tool" id="unfold-all" title="Unfold every element" aria-label="Unfold all"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"/><path d="M5 4h14"/></svg></button>
             </span>
+            <div id="view-switch" class="view-switch template-control" role="radiogroup" aria-label="View of the tree">
+                <button type="button" role="radio" data-view-set="example" aria-checked="true" title="The tree of the document filled with the examples">Examples</button>
+                <button type="button" role="radio" data-view-set="template" aria-checked="false" tabindex="-1" title="The template with its placeholders as written">Template</button>
+            </div>
         </div>
         <div id="path" class="path tree-path" aria-label="Path of the selected node"></div>
         <div id="stage" class="stage preview tree-stage" aria-label="Element tree: click a node to go to its place in the code, click a value to edit it">
             <div id="scroller" class="scroller"><ul id="tree" class="xtree" role="tree" aria-label="Element tree"></ul></div>
             <div class="stale-hint" aria-hidden="true">Updating…</div>
+            <div id="view-note" class="view-note template-control" role="status" hidden>The examples could not be filled in - the tree shows the template</div>
         </div>
     </section>
 
-    <aside class="pane inspector" aria-label="Side panel">
+    <button type="button" class="tool panel-toggle" id="btn-panel" aria-controls="side-panel" aria-expanded="false" title="Show or hide the side panel" aria-label="Side panel"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
+
+    <aside class="pane inspector" id="side-panel" aria-label="Side panel">
         <div class="pane-header tabs" role="tablist">
             <button type="button" role="tab" data-itab="node" aria-selected="true" title="The selected node: path, namespace, attributes and actions">Node</button>
             <button type="button" role="tab" data-itab="insert" aria-selected="false" title="Ready-made pieces: elements, comments, CDATA, characters">Insert</button>
@@ -294,6 +305,6 @@ addEventListener('message', e =&gt; {
 
 <?php include __DIR__ . '/footer.php'; ?>
 
-<script type="module" src="/js/app.js?v=41"></script>
+<script type="module" src="/js/app.js?v=42"></script>
 </body>
 </html>

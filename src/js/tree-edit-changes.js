@@ -3,12 +3,16 @@
  * changed part, mapped back to the code through the entity references of the text, and
  * escaped for its place (&lt; &amp; &gt; in text, the attribute's own quote in values,
  * "--" in comments, "]]>" in CDATA). Renaming an element changes its start and end tag;
- * an empty attribute name removes the attribute.
+ * an empty attribute name removes the attribute. With a template syntax a placeholder tag in a
+ * text or value is written as the syntax writes it (xml-template.js).
  */
 
 import { state } from './state.js?v=2';
-import { XML_NAME, escapeText, escapeAttribute, expandEntities } from './xml.js?v=6';
-import { getShownChildren, getAttributesEnd } from './nodes.js?v=3';
+import { XML_NAME, escapeText, escapeAttribute, expandEntities } from './xml.js?v=7';
+import { getShownChildren, getAttributesEnd } from './nodes.js?v=4';
+import { getTagBoundedEnds, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
+import { escapeTextOutsideTemplateTags } from './template-tags.js?v=2';
+import { escapeXmlComment, escapeXmlCdata } from './template-xml.js?v=1';
 
 const END_TAG_OPENER = '</';
 /** The ranges of the UTF-16 code units that are the first and the second half of a pair. */
@@ -94,7 +98,7 @@ function getNameEdit(edit, name) {
  */
 function getAttributeValueEdit(attribute, value) {
     if (attribute.noValue) {
-        const inserted = `="${escapeAttribute(value)}"`;
+        const inserted = `="${escapeTextOutsideTemplateTags(value, TEMPLATE_SYNTAX, escapeAttribute)}"`;
         return { edits: [[attribute.nameEnd, attribute.end, inserted]], cursor: attribute.nameEnd + inserted.length };
     }
     return getChangedPartEdit(attribute.raw, attribute.valStart, attribute.value, 0, value, text => escapeAttribute(text, attribute.quote));
@@ -126,12 +130,13 @@ function getCommonEnds(oldText, newText) {
  */
 function getChangedPartEdit(raw, at, oldText, lead, newText, escape) {
     const resolved = expandEntities(raw);
-    let { head, tail } = getCommonEnds(oldText, newText);
+    const common = getCommonEnds(oldText, newText);
+    let { head, tail } = getTagBoundedEnds(oldText, newText, common.head, common.tail, TEMPLATE_SYNTAX);
     // Never between the two halves of an emoji (both stand for one entity like &#x1F600;).
     if (head > 0 && isHighSurrogate(oldText.charCodeAt(head - 1))) head--;
     if (tail > 0 && isLowSurrogate(oldText.charCodeAt(oldText.length - tail))) tail--;
     const from = at + resolved.pos[lead + head], to = at + resolved.pos[lead + oldText.length - tail];
-    const inserted = escape(newText.slice(head, newText.length - tail));
+    const inserted = escapeTextOutsideTemplateTags(newText.slice(head, newText.length - tail), TEMPLATE_SYNTAX, escape);
     return { edits: [[from, to, inserted]], cursor: from + inserted.length };
 }
 
@@ -160,7 +165,7 @@ function isLowSurrogate(codeUnit) {
  * @returns {string} the safe text.
  */
 function getSafeDelimitedText(kind, text) {
-    return kind === 'comment' ? text.replace(/--/g, '- -').replace(/-$/, '- ') : text.replace(/]]>/g, ']]]]><![CDATA[>');
+    return kind === 'comment' ? escapeXmlComment(text) : escapeXmlCdata(text);
 }
 
 /**
@@ -201,7 +206,7 @@ function getElementTextEdit(node, value) {
         return getChangedPartEdit(raw, textNode.start, resolved.trim(), lead, value, escapeText);
     }
     if (!value) return null;
-    const inserted = escapeText(value);
+    const inserted = escapeTextOutsideTemplateTags(value, TEMPLATE_SYNTAX, escapeText);
     if (node.selfClose) {
         const from = getAttributesEnd(node);
         return { edits: [[from, node.tagEnd, `>${inserted}</${node.name}>`]], cursor: from + 1 + inserted.length };

@@ -1,15 +1,35 @@
 /**
  * Questions about the scanned nodes of the open document that the tree, the panel and the
  * edits share: what a node shows, whether an element is open, where things are in the code
- * and how the document is indented.
+ * and how the document is indented. A node of the example view of a template (tree-views.js)
+ * is read from the filled text it carries and stands for its node of the code.
  */
 
 import { state } from './state.js?v=2';
-import { expandEntities } from './xml.js?v=6';
+import { expandEntities } from './xml.js?v=7';
 
 const DEFAULT_UNIT = '  ';
 const TAB_UNIT = '\t';
 const FOUR_SPACES = '    ';
+
+/**
+ * Returns the text a node is read from: the filled text for a node of the example view, else the code.
+ * @param {Object} node - a scanned node.
+ * @returns {string} the text its places point into.
+ */
+export function getNodeSource(node) {
+    return node.source ?? state.code;
+}
+
+/**
+ * Returns the node of the code a node stands for: its node of the code for a node of the example
+ * view, else the node itself.
+ * @param {Object} node - a scanned node.
+ * @returns {Object} the node of the code.
+ */
+export function getCodeNode(node) {
+    return node.codeNode ?? node;
+}
 
 /**
  * Returns the text of a node with its entities resolved and its white space trimmed.
@@ -17,7 +37,7 @@ const FOUR_SPACES = '    ';
  * @returns {string} the text.
  */
 export function getNodeText(node) {
-    return expandEntities(state.code.slice(node.start, node.end)).text.trim();
+    return expandEntities(getNodeSource(node).slice(node.start, node.end)).text.trim();
 }
 
 /**
@@ -26,7 +46,7 @@ export function getNodeText(node) {
  * @returns {Object[]} the children.
  */
 export function getShownChildren(element) {
-    return element.children.filter(child => !(child.type === 'text' && !state.code.slice(child.start, child.end).trim()));
+    return element.children.filter(child => !(child.type === 'text' && !getNodeSource(child).slice(child.start, child.end).trim()));
 }
 
 /**
@@ -40,12 +60,13 @@ export function isLeaf(element) {
 }
 
 /**
- * Tells whether an element is unfolded in the tree: as the user set it, else by its depth.
+ * Tells whether an element is unfolded in the tree: as the user set it for its element of the
+ * code, else by its depth.
  * @param {Object} element - a scanned element.
  * @returns {boolean} true when its children are shown.
  */
 export function isOpen(element) {
-    return state.folds.get(element.path) ?? element.depth < state.openDepth;
+    return state.folds.get(getCodeNode(element).path) ?? element.depth < state.openDepth;
 }
 
 /**

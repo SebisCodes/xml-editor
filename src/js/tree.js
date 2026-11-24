@@ -6,17 +6,18 @@
  */
 
 import { state, elements, findElements, isNarrow, translate } from './state.js?v=2';
-import { escapeHtml, findNodeAt } from './xml.js?v=6';
+import { escapeHtml, findNodeAt } from './xml.js?v=7';
 import { getPath } from './xml-paths.js?v=2';
-import { renderRow } from './tree-rows.js?v=3';
-import { getNodeText, isLeaf, isOpen, getRowNode } from './nodes.js?v=3';
-import { renderMarks, showInCode, getSelectedRange } from './code-view.js?v=3';
-import { renderNodePanel } from './node-panel.js?v=3';
-import { isEditing, startTreeEdit } from './tree-edit.js?v=3';
-import { runTreeAction } from './tree-actions.js?v=3';
-import { findByXpath } from './search.js?v=3';
-import { showPane } from './layout.js?v=3';
+import { renderRow } from './tree-rows.js?v=4';
+import { getNodeText, isLeaf, isOpen, getRowNode } from './nodes.js?v=4';
+import { renderMarks, showInCode, getSelectedRange } from './code-view.js?v=4';
+import { renderNodePanel } from './node-panel.js?v=4';
+import { isEditing, startTreeEdit } from './tree-edit.js?v=4';
+import { runTreeAction } from './tree-actions.js?v=4';
+import { findByXpath } from './search.js?v=4';
+import { showPane } from './layout.js?v=4';
 import { showToast } from './toast.js?v=2';
+import { getTreeModel } from './tree-views.js?v=1';
 
 const SCROLL_MARGIN = 4;                // pixels a selected row keeps from the edges of the tree
 const SCROLL_TARGET_SHARE = 1 / 3;      // share of the tree's height above a row scrolled to
@@ -33,11 +34,12 @@ export function createTreeArea() {
 }
 
 /**
- * Draws the tree from the scanned nodes and marks the selection and the matches.
+ * Draws the tree from the scanned nodes (in the example view of a template those of the filled
+ * document) and marks the selection and the matches.
  * @returns {void}
  */
 export function renderTree() {
-    const html = state.model.doc.children.map(renderRow).join('');
+    const html = getTreeModel().doc.children.map(renderRow).join('');
     elements.tree.innerHTML = html || `<li class="empty-hint">${escapeHtml(translate('The document is empty - type some XML on the left, or choose a template under "New".'))}</li>`;
     showTreeMarks();
 }

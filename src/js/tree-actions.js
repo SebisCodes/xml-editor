@@ -7,23 +7,29 @@
 
 import { state, isTreeCurrent } from './state.js?v=2';
 import { getPath } from './xml-paths.js?v=2';
-import { getShownChildren, getAttributesEnd, getIndentUnit, getIndentAt, getElementCountBefore, getLineRange } from './nodes.js?v=3';
-import { applyEdits } from './history.js?v=3';
-import { selectNode } from './tree.js?v=3';
-import { startEditAfterRender } from './tree-edit.js?v=3';
+import { getShownChildren, getAttributesEnd, getIndentUnit, getIndentAt, getElementCountBefore, getLineRange } from './nodes.js?v=4';
+import { applyEdits } from './history.js?v=4';
+import { selectNode } from './tree.js?v=4';
+import { startEditAfterRender } from './tree-edit.js?v=4';
 import { showToast } from './toast.js?v=2';
+import { isWholeTreeNode, EXAMPLE_PART_NOTE } from './tree-views.js?v=1';
 
 const DEFAULT_CHILD_NAME = 'item';
 const DEFAULT_ATTRIBUTE_NAME = 'name';
 
+/** The actions that move or remove a node of the code. */
+const STRUCTURE_ACTIONS = new Set(['up', 'down', 'del']);
+
 /**
- * Runs the action of a row button on a node, when the tree is read from the current code.
+ * Runs the action of a row button on a node, when the tree is read from the current code; in
+ * the example view a node is moved or removed only as a whole (tree-views.js).
  * @param {string} action - child, attr, up, down or del.
  * @param {Object} node - the node of the row, {attr, el} for an attribute.
  * @returns {void}
  */
 export function runTreeAction(action, node) {
     if (!isTreeCurrent()) return;
+    if (STRUCTURE_ACTIONS.has(action) && !isWholeTreeNode(node)) { showToast(EXAMPLE_PART_NOTE); return; }
     if (action === 'child') addChild(node);
     else if (action === 'attr') addAttribute(node);
     else if (action === 'up') moveElement(node, -1);

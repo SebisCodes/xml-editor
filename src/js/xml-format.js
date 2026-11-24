@@ -6,7 +6,8 @@
  * next to elements as "#text", repeated elements as lists).
  */
 
-import { expandEntities } from './xml.js?v=6';
+import { expandEntities } from './xml.js?v=7';
+import { getTemplateTags } from './template-tags.js?v=2';
 
 const DEFAULT_UNIT = '  ';
 const ELEMENT_NODE = 1;
@@ -123,22 +124,39 @@ function addFormattedElement(source, element, depth, unit, lines) {
 
 /**
  * Returns the document compact: no comments, no white space between elements (except in
- * mixed content and xml:space="preserve").
+ * mixed content and xml:space="preserve"). In a template, text around the root element and comments
+ * that hold placeholder tags stay (the text trimmed).
  * @param {XmlModel} model - the scanned nodes (xml.js).
+ * @param {?import('./template-tags.js').TemplateSyntax} [syntax=null] - the template syntax, or null for plain XML.
  * @returns {string} the minified code.
  */
-export function getMinifiedXml(model) {
-    return model.doc.children.map(child => (child.type === 'text' ? '' : getMinifiedNode(model.src, child))).filter(Boolean).join('');
+export function getMinifiedXml(model, syntax = null) {
+    return model.doc.children.map(child => (child.type === 'text' ? getOuterTemplateText(model.src, child, syntax) : getMinifiedNode(model.src, child, syntax))).filter(Boolean).join('');
 }
 
 /**
- * Returns one node minified.
+ * Returns the text around the root element that a template keeps: the text, trimmed, when it
+ * holds placeholder tags.
+ * @param {string} source - the code.
+ * @param {Object} node - a scanned text node of the document itself.
+ * @param {?import('./template-tags.js').TemplateSyntax} syntax - the template syntax, or null for plain XML.
+ * @returns {string} the trimmed text, or "" for text without tags and for plain XML.
+ */
+function getOuterTemplateText(source, node, syntax) {
+    const text = source.slice(node.start, node.end).trim();
+    return syntax && getTemplateTags(text, syntax).length ? text : '';
+}
+
+/**
+ * Returns one node minified; in a template a comment that holds placeholder tags stays.
  * @param {string} source - the code.
  * @param {Object} node - a scanned node.
+ * @param {?import('./template-tags.js').TemplateSyntax} syntax - the template syntax, or null for plain XML.
  * @returns {string} the node without comments and white space between elements.
  */
-function getMinifiedNode(source, node) {
-    if (node.type === 'el') return getMinifiedElement(source, node);
+function getMinifiedNode(source, node, syntax) {
+    if (node.type === 'el') return getMinifiedElement(source, node, syntax);
+    if (node.type === 'comment' && syntax && getTemplateTags(source.slice(node.start, node.end), syntax).length) return source.slice(node.start, node.end);
     return node.type === 'comment' || node.type === 'text' ? '' : source.slice(node.start, node.end);
 }
 
@@ -146,13 +164,14 @@ function getMinifiedNode(source, node) {
  * Returns one element minified.
  * @param {string} source - the code.
  * @param {Object} element - a scanned element.
+ * @param {?import('./template-tags.js').TemplateSyntax} syntax - the template syntax, or null for plain XML.
  * @returns {string} the element without comments and white space between its elements.
  */
-function getMinifiedElement(source, element) {
+function getMinifiedElement(source, element, syntax) {
     const startTag = getStartTag(source, element);
     if (element.selfClose) return startTag;
     if (isKeptAsWritten(source, element)) return startTag + source.slice(element.tagEnd, element.closeStart) + `</${element.name}>`;
-    return startTag + element.children.map(child => getMinifiedNode(source, child)).join('') + `</${element.name}>`;
+    return startTag + element.children.map(child => getMinifiedNode(source, child, syntax)).join('') + `</${element.name}>`;
 }
 
 /**

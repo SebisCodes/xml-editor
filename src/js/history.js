@@ -11,9 +11,9 @@
 
 import { state, elements, services, findElement } from './state.js?v=2';
 import { showToast } from './toast.js?v=2';
-import { renderPreview } from './preview.js?v=3';
-import { showInCode } from './code-view.js?v=3';
-import { saveDocument } from './autosave.js?v=3';
+import { renderPreview } from './preview.js?v=4';
+import { showInCode } from './code-view.js?v=4';
+import { saveDocument } from './autosave.js?v=4';
 
 const HISTORY_LIMIT = 300;              // undo steps kept per document
 

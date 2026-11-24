@@ -83,6 +83,9 @@ with sync_playwright() as pw:
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.goto(URL + '?lang=en', wait_until='networkidle')
     page.wait_for_timeout(800)
+    check_that(page.get_attribute('#btn-panel', 'aria-expanded') == 'false' and not page.is_visible('#side-panel'), 'the side panel is closed at the start')
+    page.click('#btn-panel')
+    check_that(page.is_visible('#side-panel'), 'the side panel opens with its button')
 
     # --- First visit: the welcome example ---
     check_that(get_state(page, 'S.name') == 'Welcome', 'the first visit opens the welcome example')

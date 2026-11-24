@@ -3,25 +3,28 @@
  *
  * renderPreview() runs these steps:
  *   1. end an edit in the tree that is still open (the tree is drawn anew);
- *   2. read the code: nodes, problems, the parsed document, its links and namespaces;
+ *   2. read the code: nodes, problems, the parsed document, its links and namespaces, and with a
+ *      template syntax the tree to show (the example view or the template view, tree-views.js);
  *   3. find the selected node again by its path;
  *   4. evaluate the XPath field and the search again;
- *   5. draw the tree, the problems, the code and the side panel.
+ *   5. draw the tree, the problems, the code, the side panel and the controls of template
+ *      placeholders.
  * Typing reads the tree after a pause (startRenderSoon); commands that work on the tree
  * call readTreeNow() first.
  */
 
 import { state, elements } from './state.js?v=2';
-import { parseNodes } from './xml.js?v=6';
-import { checkDocument } from './xml-check.js?v=3';
+import { checkXmlCode, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
 import { createLinker, createNamespaceResolver } from './xml-paths.js?v=2';
-import { renderTree } from './tree.js?v=3';
-import { isEditing, stopTreeEdit } from './tree-edit.js?v=3';
-import { updateQueryHits, updateSearchFound } from './search.js?v=3';
-import { renderProblems } from './problems.js?v=3';
-import { renderCode } from './code-view.js?v=3';
-import { renderNodePanel } from './node-panel.js?v=3';
-import { renderConvertPanel } from './conversion-panel.js?v=3';
+import { renderTree } from './tree.js?v=4';
+import { isEditing, stopTreeEdit } from './tree-edit.js?v=4';
+import { updateQueryHits, updateSearchFound } from './search.js?v=4';
+import { renderProblems } from './problems.js?v=4';
+import { renderCode } from './code-view.js?v=4';
+import { renderNodePanel } from './node-panel.js?v=4';
+import { renderConvertPanel } from './conversion-panel.js?v=4';
+import { setShownTree } from './tree-views.js?v=1';
+import { renderTemplateControls } from './template-panel.js?v=1';
 
 const LARGE_DOCUMENT = 1500;            // more elements than this: the tree opens folded below the second level
 const LARGE_DOCUMENT_DEPTH = 2;
@@ -57,18 +60,22 @@ export function renderPreview() {
     renderCode();
     renderNodePanel();
     if (!elements.convertPanel.hidden) renderConvertPanel();
+    renderTemplateControls();
 }
 
 /**
- * Reads the code into nodes, problems, the parsed document, its links and namespaces. A
- * large document opens folded below the second level, decided once per document.
+ * Reads the code into nodes, problems, the parsed document, its links and namespaces (with a
+ * template syntax the tags read as text, xml-template.js), and the tree to show. A large
+ * document opens folded below the second level, decided once per document.
  * @returns {void}
  */
 function readTree() {
-    state.model = parseNodes(state.code);
-    state.result = checkDocument(state.model);
+    const checked = checkXmlCode(state.code, TEMPLATE_SYNTAX);
+    state.model = checked.model;
+    state.result = checked.result;
     state.linker = createLinker(state.model, state.result.doc);
     state.namespaces = createNamespaceResolver(state.model);
+    setShownTree();
     if (state.model.els.length > LARGE_DOCUMENT && state.openDepth === Infinity && !state.isFoldDepthSet) state.openDepth = LARGE_DOCUMENT_DEPTH;
     state.isFoldDepthSet = true;
 }

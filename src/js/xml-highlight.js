@@ -4,7 +4,7 @@
  * references, c comments, d CDATA, processing instructions and the DOCTYPE).
  */
 
-import { escapeHtml, findTagClose, findDoctypeClose } from './xml.js?v=6';
+import { escapeHtml, findTagClose, findDoctypeClose } from './xml.js?v=7';
 
 const TAG_TOKEN = /(\s+)|([^\s=/>"']+)|(=)|("[^"]*"?|'[^']*'?)|(\/?>)|([\s\S])/g;
 const ENTITY_REFERENCE = /&#?[\w.:-]+;/g;

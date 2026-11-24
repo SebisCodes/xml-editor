@@ -8,21 +8,21 @@
  */
 
 import { state, elements, services, translate } from './state.js?v=2';
-import { createAi } from './ai.js?v=8';
+import { createAi } from './ai.js?v=9';
 import { createMcp } from './mcp.js?v=4';
-import { createAiStatus } from './aistatus.js?v=8';
-import { startConvert } from './convert-to.js?v=14';
-import { createSync } from './sync.js?v=23';
+import { createAiStatus } from './aistatus.js?v=9';
+import { startConvert } from './convert-to.js?v=15';
+import { createSync } from './sync.js?v=24';
 import { store } from './files.js?v=8';
-import { parseNodes } from './xml.js?v=6';
-import { checkDocument } from './xml-check.js?v=3';
-import { formatXml } from './xml-format.js?v=3';
-import { getLineIndex, getColumnIndex } from './code-view.js?v=3';
-import { readTreeNow } from './preview.js?v=3';
-import { undo } from './history.js?v=3';
-import { openDocument } from './documents.js?v=3';
-import { receiveDocument, importExternalDocument } from './incoming.js?v=3';
-import { runQueryTool, setTextByXpath, setAttributeByXpath, updateCodeText, showLine, getFileList, openFileByName, createFile } from './mcp-actions.js?v=3';
+import { checkXmlCode, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
+import { formatXml } from './xml-format.js?v=4';
+import { getLineIndex, getColumnIndex } from './code-view.js?v=4';
+import { readTreeNow, renderPreview } from './preview.js?v=4';
+import { createTemplateExamples } from './template-examples.js?v=2';
+import { undo } from './history.js?v=4';
+import { openDocument } from './documents.js?v=4';
+import { receiveDocument, importExternalDocument } from './incoming.js?v=4';
+import { runQueryTool, setTextByXpath, setAttributeByXpath, updateCodeText, showLine, getFileList, openFileByName, createFile } from './mcp-actions.js?v=4';
 import { showToast } from './toast.js?v=2';
 
 const PREFIX = 'xmleditor';
@@ -43,6 +43,8 @@ export function startAssistants() {
         remote: () => services.sync?.getAiSettings() || null,
         fetchKey: () => (services.sync ? services.sync.fetchKey() : Promise.resolve(null)),
         keyValid: () => !!services.sync?.hasValidKey(),
+        handleAiClick: openEditorDialog => (services.sync ? services.sync.handleAiClick(openEditorDialog) : openEditorDialog()),
+        getKeyDecline: () => services.sync?.getKeyDecline() || '',
     });
     const agent = createMcp({
         onUse: addAgentUse, getState: getPromptState, problems: getProblemList,
@@ -67,6 +69,8 @@ export function startAssistants() {
         hookFor: id => store.getMeta(id)?.hook || null,
         setHookFor: setDocumentHook,
         onAi: () => aiAssistant?.refresh(),
+        parseTemplate: message => createTemplateExamples(message),
+        onTemplate: () => renderPreview(),
     });
 }
 
@@ -132,8 +136,8 @@ function addAgentUse() {
  * @returns {string} the formatted or unchanged code.
  */
 function formatCodeAsStep(code) {
-    const model = parseNodes(code);
-    return checkDocument(model).doc ? formatXml(model) : code;
+    const { model, result } = checkXmlCode(code, TEMPLATE_SYNTAX);
+    return result.doc ? formatXml(model) : code;
 }
 
 /**

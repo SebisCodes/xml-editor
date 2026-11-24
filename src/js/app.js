@@ -10,39 +10,41 @@
  * This file starts the editor and wires its areas:
  *   1. the interface language (i18n.js) and the wrapped rows of the code view (wrap.js);
  *   2. the areas: saving, code view, tree, editing in the tree, search, problems, typing,
- *      side panel, bar, files, keyboard, layout, export, and "My documents";
+ *      side panel, bar, files, keyboard, layout, export, the controls of template
+ *      placeholders, and "My documents";
  *   3. the document that was open last (the first visit gets the example);
  *   4. AI Assistant, WebMCP, AI status, other editors and sync.js (assistants.js);
  *   5. the hook window.xmlEditor for the automated tests.
  */
 
-import { createI18n } from './i18n.js?v=22';
+import { createI18n } from './i18n.js?v=23';
 import { createWrap } from './wrap.js?v=5';
 import './export-menu.js?v=6';
 import { state, elements, services } from './state.js?v=2';
 import { store, createFiles } from './files.js?v=8';
 import { START } from './samples.js?v=3';
-import { startAutosave, getStoredSettings, setSavedCode } from './autosave.js?v=3';
-import { startCodeView, renderCode, syncLayerScroll, showInCode } from './code-view.js?v=3';
-import { setCode, addHistoryStep, undo, redo } from './history.js?v=3';
-import { renderPreview, findNodeByPath } from './preview.js?v=3';
-import { createTreeArea, renderTree, selectNode } from './tree.js?v=3';
-import { startTreeEditing } from './tree-edit.js?v=3';
-import { startSearch, findByXpath } from './search.js?v=3';
-import { startProblems } from './problems.js?v=3';
-import { startTyping } from './typing.js?v=3';
-import { startNodePanel } from './node-panel.js?v=3';
-import { startInsertPanel } from './insert-panel.js?v=3';
-import { startConvertPanel } from './conversion-panel.js?v=3';
-import { startToolbar } from './toolbar.js?v=3';
-import { startFileInput, openFileDialog } from './file-input.js?v=3';
-import { startKeyboard } from './keyboard.js?v=3';
-import { startLayout, showSplit } from './layout.js?v=3';
-import { startExport } from './export-dialog.js?v=3';
-import { showFileName, openChosenDocument, createFromMenu, renameDocument, closeDeletedDocument } from './documents.js?v=3';
-import { receiveDocument } from './incoming.js?v=3';
-import { startAssistants } from './assistants.js?v=3';
+import { startAutosave, getStoredSettings, setSavedCode } from './autosave.js?v=4';
+import { startCodeView, renderCode, syncLayerScroll, showInCode } from './code-view.js?v=4';
+import { setCode, addHistoryStep, undo, redo } from './history.js?v=4';
+import { renderPreview, findNodeByPath } from './preview.js?v=4';
+import { createTreeArea, renderTree, selectNode } from './tree.js?v=4';
+import { startTreeEditing } from './tree-edit.js?v=4';
+import { startSearch, findByXpath } from './search.js?v=4';
+import { startProblems } from './problems.js?v=4';
+import { startTyping } from './typing.js?v=4';
+import { startNodePanel } from './node-panel.js?v=4';
+import { startInsertPanel } from './insert-panel.js?v=4';
+import { startConvertPanel } from './conversion-panel.js?v=4';
+import { startToolbar } from './toolbar.js?v=4';
+import { startFileInput, openFileDialog } from './file-input.js?v=4';
+import { startKeyboard } from './keyboard.js?v=4';
+import { startLayout, showSplit } from './layout.js?v=4';
+import { startExport } from './export-dialog.js?v=4';
+import { showFileName, openChosenDocument, createFromMenu, renameDocument, closeDeletedDocument } from './documents.js?v=4';
+import { receiveDocument } from './incoming.js?v=4';
+import { startAssistants } from './assistants.js?v=4';
 import { showToast } from './toast.js?v=2';
+import { startTemplateControls } from './template-panel.js?v=1';
 
 const PREFIX = 'xmleditor';
 const GERMAN = 'de';
@@ -95,6 +97,7 @@ function startAreas() {
     startKeyboard();
     startLayout();
     startExport();
+    startTemplateControls();
 }
 
 /**

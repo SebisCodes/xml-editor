@@ -6,11 +6,12 @@
  */
 
 import { state, elements, findElement } from './state.js?v=2';
-import { escapeHtml } from './xml.js?v=6';
-import { formatXml, getMinifiedXml, convertToJson, convertToYaml } from './xml-format.js?v=3';
-import { getIndentUnit } from './nodes.js?v=3';
-import { readTreeNow } from './preview.js?v=3';
-import { applyEdits } from './history.js?v=3';
+import { escapeHtml } from './xml.js?v=7';
+import { formatXml, getMinifiedXml, convertToJson, convertToYaml } from './xml-format.js?v=4';
+import { getIndentUnit } from './nodes.js?v=4';
+import { readTreeNow } from './preview.js?v=4';
+import { TEMPLATE_SYNTAX } from './xml-template.js?v=1';
+import { applyEdits } from './history.js?v=4';
 import { showToast } from './toast.js?v=2';
 import { saveDownload, getSafeName, copyToClipboard } from './util.js?v=3';
 
@@ -88,7 +89,7 @@ export function formatCode(unit = getUnitOfChoice(indentChoice || DEFAULT_INDENT
  * @returns {void}
  */
 function compressCode() {
-    const minified = getMinifiedXml(state.model);
+    const minified = getMinifiedXml(state.model, TEMPLATE_SYNTAX);
     if (minified === state.code) { showToast('The code is minified already'); return; }
     applyEdits([[0, state.code.length, minified]], 0);
     showToast('Code minified - "Undo" brings it back');

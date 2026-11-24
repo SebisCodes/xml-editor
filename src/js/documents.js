@@ -14,8 +14,8 @@ import { state, elements, services, findElement } from './state.js?v=2';
 import { store } from './files.js?v=8';
 import { START, TEMPLATES } from './samples.js?v=3';
 import { openConfirmation } from './dialogs.js?v=5';
-import { setCode, addHistoryStep, updateHistoryButtons, applyEdits } from './history.js?v=3';
-import { saveWaiting, setSavedCode } from './autosave.js?v=3';
+import { setCode, addHistoryStep, updateHistoryButtons, applyEdits } from './history.js?v=4';
+import { saveWaiting, setSavedCode } from './autosave.js?v=4';
 import { showToast } from './toast.js?v=2';
 
 const DEFAULT_NAME = 'Document';

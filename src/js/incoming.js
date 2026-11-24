@@ -7,11 +7,11 @@
  */
 
 import { state, elements } from './state.js?v=2';
-import { VIEWER } from './sync.js?v=23';
-import { parseNodes } from './xml.js?v=6';
+import { VIEWER } from './sync.js?v=24';
+import { parseCodeNodes, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
 import { store } from './files.js?v=8';
-import { applyEdits } from './history.js?v=3';
-import { openDocument, createDocument, getBlankDocument } from './documents.js?v=3';
+import { applyEdits } from './history.js?v=4';
+import { openDocument, createDocument, getBlankDocument } from './documents.js?v=4';
 import { showToast } from './toast.js?v=2';
 
 const AI_DOCUMENT_NAME = 'AI document';
@@ -43,7 +43,7 @@ const DEFAULT_UNIT = '  ';
  * @returns {string} the new code.
  */
 function getCodeWithFragment(code, fragment) {
-    const root = parseNodes(code).els[0];
+    const root = parseCodeNodes(code, TEMPLATE_SYNTAX).els[0];
     if (!root || root.unclosed) return code.replace(/\s*$/, '\n') + fragment.trim() + '\n';
     const lineStart = code.lastIndexOf('\n', root.start - 1) + 1;
     const indent = /^[ \t]*/.exec(code.slice(lineStart))[0];

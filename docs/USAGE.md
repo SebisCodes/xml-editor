@@ -38,8 +38,20 @@ node in the tree. Click a name, an attribute value or a text to edit it right th
 one step for Undo), **Escape** cancels. The buttons of a row add a child element or an
 attribute, move the element up or down, or remove it.
 
-The right side panel has **Node** (the selected node), **Insert** (ready-made pieces) and
-**Convert** (format, minify, JSON, YAML).
+The side panel has **Node** (the selected node), **Insert** (ready-made pieces) and
+**Convert** (format, minify, JSON, YAML). The button at the top right of the work area opens it
+over the tree and closes it again (Escape too); it is closed when the editor opens. On a phone it
+is the view **Edit**.
+
+## Templates with placeholders
+
+A website that edits templates opens the editor with `?template=mustache` or `?template=angle`.
+The tree then shows the document filled with the website's examples; **Template** in the tree's
+bar shows the placeholders as written, **Examples** brings the examples back. A placeholder without
+an example shows its label in brackets. The **Placeholders** box below the code lists them: a click
+puts one at the cursor, a section around the selected text. A part of the tree that shows an
+example is edited in the code or in the template view. Saving, downloading and exporting keep the
+placeholders.
 
 ## Safe parsing
 
@@ -93,7 +105,9 @@ document appears in your editor. **Undo** takes every change back. The links loo
 A tab opened with such a link hands the document to the editor tab you used last. You can
 also paste the AI's whole answer into the editor (Ctrl+V outside the code); links that a
 terminal broke over several lines are joined. When the editor is embedded in another
-website, links cannot reach it, so paste the answer there.
+website, links cannot reach it, so paste the answer there. A website that embeds the
+editor may give its own instructions for how the AI answers, or show its own AI dialog
+when you press the button; the dialog names the website and shows its instructions.
 
 **Browser agents (WebMCP):** in browsers that offer WebMCP, the page registers tools for AI
 agents that run in the page itself: `get_document`, `get_problems`, `query` (XPath 1.0),

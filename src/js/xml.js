@@ -16,7 +16,7 @@
  */
 
 import { setPaths } from './xml-paths.js?v=2';
-import { MAX_DEPTH, PREDEFINED_ENTITIES } from './xml-check.js?v=3';
+import { MAX_DEPTH, PREDEFINED_ENTITIES } from './xml-check.js?v=4';
 
 /**
  * A node of the code with its place.

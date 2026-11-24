@@ -5,8 +5,8 @@
  */
 
 import { state, findElement } from './state.js?v=2';
-import { applyEdits } from './history.js?v=3';
-import { createDocument } from './documents.js?v=3';
+import { applyEdits } from './history.js?v=4';
+import { createDocument } from './documents.js?v=4';
 import { showToast } from './toast.js?v=2';
 
 const XML_FILE = /\.(xml|xsd|xsl|xslt|rss|atom|svg|xhtml|kml|gpx|plist|config|csproj|vbproj|props|targets|resx|wsdl|xlf|xliff|nuspec|pom|txt)$/i;

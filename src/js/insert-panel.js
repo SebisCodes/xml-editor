@@ -5,9 +5,9 @@
  */
 
 import { state, elements } from './state.js?v=2';
-import { escapeHtml } from './xml.js?v=6';
-import { addSnippet } from './typing.js?v=3';
-import { applyEdits } from './history.js?v=3';
+import { escapeHtml } from './xml.js?v=7';
+import { addSnippet } from './typing.js?v=4';
+import { applyEdits } from './history.js?v=4';
 import { showToast } from './toast.js?v=2';
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>\n';

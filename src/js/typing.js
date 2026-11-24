@@ -7,13 +7,13 @@
  */
 
 import { state, elements, services } from './state.js?v=2';
-import { parseNodes } from './xml.js?v=6';
-import { getIndentUnit, getIndentAt } from './nodes.js?v=3';
-import { renderCode } from './code-view.js?v=3';
-import { startRenderSoon } from './preview.js?v=3';
-import { addHistoryStep, startHistoryStep, undo, redo } from './history.js?v=3';
-import { startSaveSoon } from './autosave.js?v=3';
-import { selectFromCursor } from './tree.js?v=3';
+import { parseCodeNodes, TEMPLATE_SYNTAX } from './xml-template.js?v=1';
+import { getIndentUnit, getIndentAt } from './nodes.js?v=4';
+import { renderCode } from './code-view.js?v=4';
+import { startRenderSoon } from './preview.js?v=4';
+import { addHistoryStep, startHistoryStep, undo, redo } from './history.js?v=4';
+import { startSaveSoon } from './autosave.js?v=4';
+import { selectFromCursor } from './tree.js?v=4';
 
 const RENDER_DELAY = 280;               // milliseconds after the last key stroke before the tree is read
 const LARGE_CODE_RENDER_DELAY = 600;
@@ -217,7 +217,7 @@ function closeStartTag(event, { value, start }) {
  * @returns {void}
  */
 function addOpenEndTag(event, { value, start }) {
-    const openElements = parseNodes(value.slice(0, start - 1)).els.filter(element => element.unclosed);
+    const openElements = parseCodeNodes(value.slice(0, start - 1), TEMPLATE_SYNTAX).els.filter(element => element.unclosed);
     const element = openElements[openElements.length - 1];
     if (!element || !element.name) return;
     event.preventDefault();

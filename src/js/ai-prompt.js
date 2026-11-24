@@ -7,6 +7,8 @@
  * The prompt is always English.
  */
 
+import { formatSiteText, formatDocumentData, formatAnswerPart } from './prompt-parts.js?v=1';
+
 const SITE = 'https://xml.giit.ch/';
 const OTHERS_LISTED = 40;
 const SELECTION_SHOWN = 300;
@@ -63,25 +65,13 @@ export const PROMPT_HEAD = `${PROMPT_BASE}\n\n${PROMPT_SAVING}`;
  */
 
 /**
- * Returns text from a website marked as such: where it comes from (the real origin) and fenced.
- * @param {string} heading - the heading (INSTRUCTIONS, RULES).
- * @param {string} [site] - the real origin.
- * @param {string} [label] - the name the page gives itself.
- * @param {string} text - the page's text.
- * @returns {string} the fenced part.
- */
-function getSitePart(heading, site, label, text) {
-    return `${heading} ${site ? `FROM THE WEBSITE ${site}` : 'FROM THE WEBSITE'}${label && label !== site ? ` ("${label}")` : ''}\n\`\`\`text\n${text.replace(/`{3,}/g, "'''")}\n\`\`\``;
-}
-
-/**
  * Returns the part about the page that holds the document.
  * @param {PageContext} context - plain text from that page.
  * @returns {string} the part.
  */
 function getContextPart(context) {
     return `THIS DOCUMENT BELONGS TO ${context.host ? `"${context.host}"` : 'a website'}${context.title ? ` ("${context.title}")` : ''}
-That page opened the editor and gets every saved version back by itself when I click Save (or press Ctrl+S) - nothing to set up and no server to build. Keep the document working with that page.${context.rules ? `\n\n${getSitePart('RULES', context.site, context.host, context.rules)}` : ''}`;
+That page opened the editor and gets every saved version back by itself when I click Save (or press Ctrl+S) - nothing to set up and no server to build. Keep the document working with that page.${context.rules ? `\n\n${formatSiteText('RULES', context.site, context.host, context.rules)}` : ''}`;
 }
 
 /**
@@ -110,9 +100,10 @@ function getRemotePrompt(promptState, remote, makeNew) {
         const abilities = getBasePart('WHAT THE EDITOR CAN SHOW');
         parts.push(`You write for my XML editor ${SITE}, inside the website "${remote.label}".\nWrite the complete document; it must be well-formed XML. Keep my work, its formatting and its namespaces unless I ask otherwise.${abilities ? '\n\n' + abilities : ''}`);
     }
-    if (remote.prompt) parts.push(getSitePart('INSTRUCTIONS', remote.site, remote.label, remote.prompt));
-    if (promptState.context && promptState.context.rules) parts.push(getSitePart('RULES', remote.site, remote.label, promptState.context.rules));
-    parts.push(getRemoteAnswerPart(promptState, remote, makeNew));
+    if (remote.prompt) parts.push(formatSiteText('INSTRUCTIONS', remote.site, remote.label, remote.prompt));
+    if (promptState.context && promptState.context.rules) parts.push(formatSiteText('RULES', remote.site, remote.label, promptState.context.rules));
+    const answer = formatAnswerPart(remote, getRemoteAnswerPart(promptState, remote, makeNew));
+    if (answer) parts.push(answer);
     return parts.join('\n\n');
 }
 
@@ -157,5 +148,5 @@ export function getPrompt(promptState, makeNew) {
     const problems = promptState.problems && promptState.problems.length ? `\nThe editor reports: ${promptState.problems.slice(0, PROBLEMS_LISTED).join('; ')}` : '';
     if (promptState.remote) heading = `MY ${makeNew ? 'CURRENT' : ''} DOCUMENT "${promptState.name}"`.replace('  ', ' ');
     const selection = promptState.sel ? ` (I have selected: "${promptState.sel.slice(0, SELECTION_SHOWN)}")` : '';
-    return `${instructions}\n\n${promptState.remote ? '' : `${documentList}\n${goal}\n\n`}${heading}${selection}${problems}\n\`\`\`xml\n${promptState.code.trim()}\n\`\`\`\n\nMy request: `;
+    return `${instructions}\n\n${promptState.remote ? '' : `${documentList}\n${goal}\n\n`}${heading}${selection}${problems}\n${formatDocumentData('xml', promptState.code.trim())}\n\nMy request: `;
 }

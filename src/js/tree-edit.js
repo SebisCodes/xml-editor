@@ -1,7 +1,9 @@
 /**
  * Editing in the tree: a click on a name, an attribute value, a text, a comment or a CDATA
  * section makes it editable; Enter, Tab or leaving it writes the change into the code (one
- * undo step, special characters escaped for their place), Escape cancels.
+ * undo step, special characters escaped for their place), Escape cancels. In the example view of
+ * a template a part is edited in place only when it shows the text of the code itself; a part
+ * with an example is edited in the code or in the template view.
  *
  * stopTreeEdit(true) runs these steps:
  *   1. read the edited text and make the part plain again;
@@ -12,10 +14,11 @@
  */
 
 import { state, elements, isTreeCurrent } from './state.js?v=2';
-import { getTreeEdit, getTreeEditRefusal } from './tree-edit-changes.js?v=3';
-import { applyEdits } from './history.js?v=3';
-import { selectNode } from './tree.js?v=3';
+import { getTreeEdit, getTreeEditRefusal } from './tree-edit-changes.js?v=4';
+import { applyEdits } from './history.js?v=4';
+import { selectNode } from './tree.js?v=4';
 import { showToast } from './toast.js?v=2';
+import { isCopiedTreePart, EXAMPLE_PART_NOTE } from './tree-views.js?v=1';
 
 const MULTILINE_KINDS = ['text', 'comment', 'cdata'];
 const SPELLCHECKED_KINDS = ['text', 'comment'];
@@ -132,6 +135,7 @@ export function startTreeEdit(span, node, x, y, selectAll = false, next = null) 
     if (openEdit) return;
     if (!isTreeCurrent()) { showToast('This changed in the code - wait for the tree, then try again'); return; }
     const kind = span.dataset.ed;
+    if (!isCopiedTreePart(node, kind, span.dataset.a != null ? +span.dataset.a : -1, span.textContent)) { showToast(EXAMPLE_PART_NOTE); return; }
     openEdit = { span, node, kind, ai: span.dataset.a != null ? +span.dataset.a : -1, before: span.textContent, next };
     span.contentEditable = 'plaintext-only';
     if (span.contentEditable !== 'plaintext-only') span.contentEditable = 'true';

@@ -9,8 +9,11 @@
  *      entity or entity expansion is ever read (no XXE, no "billion laughs"); references to
  *      entities declared in a DTD are written as text and stay as they are;
  *   3. a second or misplaced DOCTYPE, undeclared namespace prefixes and ids used twice are
- *      found in the scanned nodes, and a DTD gets a note.
+ *      found in the scanned nodes, and a DTD gets a note. In a template (xml-template.js) an id
+ *      or a namespace prefix that holds a placeholder counts as filled later.
  */
+
+import { hasTemplatePlaceholder } from './template-tags.js?v=2';
 
 /** Elements nested deeper than this would overflow the browser's stack in the walks over the tree. */
 export const MAX_DEPTH = 1000;
@@ -43,9 +46,11 @@ const ESCAPED_AMPERSAND_GROWTH = 4;     // "&name;" written as "&amp;name;" is 4
  * well-formedness error, a misplaced or second DOCTYPE, undeclared namespace prefixes,
  * ids used twice and a note about a DTD.
  * @param {XmlModel} model - the nodes of the code.
+ * @param {boolean} [isTemplate=false] - true when the code is a template: an id or a namespace prefix
+ *     that holds a placeholder counts as filled later and stays out of the checks.
  * @returns {XmlCheckResult} the parsed document (null when not well-formed) and the problems.
  */
-export function checkDocument(model) {
+export function checkDocument(model, isTemplate = false) {
     if (!model.src.trim()) return { doc: null, problems: [{ pos: 0, kind: 'error', msg: 'The document is empty - an XML document needs one root element' }] };
     if (model.tooDeep >= 0) {
         return { doc: null, problems: [{ pos: model.tooDeep, kind: 'error', msg: `The elements are nested more than ${MAX_DEPTH} levels deep - the editor reads at most ${MAX_DEPTH}` }] };
@@ -53,7 +58,7 @@ export function checkDocument(model) {
     const copy = getSafeCopy(model);
     const parsed = parseSafeCopy(model, copy);
     const doctypeProblems = getDoctypeProblems(model);
-    const problems = [...parsed.problems, ...doctypeProblems, ...getNamespaceProblems(model), ...getDuplicateIdProblems(model), ...getDtdNotes(copy)];
+    const problems = [...parsed.problems, ...doctypeProblems, ...getNamespaceProblems(model, isTemplate), ...getDuplicateIdProblems(model, isTemplate), ...getDtdNotes(copy)];
     problems.sort((first, second) => first.pos - second.pos);
     return { doc: doctypeProblems.length ? null : parsed.doc, problems };
 }
@@ -199,14 +204,21 @@ function getDoctypeProblems(model) {
 /**
  * Returns an error for every element and attribute whose namespace prefix is not declared.
  * @param {XmlModel} model - the nodes of the code.
+ * @param {boolean} isTemplate - true for a template: a prefix that holds a placeholder counts as declared.
  * @returns {XmlProblem[]} the errors.
  */
-function getNamespaceProblems(model) {
+function getNamespaceProblems(model, isTemplate) {
     const problems = [];
+    /**
+     * Tells whether a node's prefix is missing a declaration.
+     * @param {Object} node - a scanned element or attribute, with its uri and prefix.
+     * @returns {boolean} true when the prefix is undeclared, for a template only when the prefix is free of placeholders.
+     */
+    const isUndeclared = node => node.uri === null && !(isTemplate && hasTemplatePlaceholder(node.prefix));
     for (const element of model.els) {
-        if (element.uri === null) problems.push({ pos: element.nameStart, kind: 'error', msg: `The namespace prefix "${element.prefix}" is not declared - add xmlns:${element.prefix}="…"` });
+        if (isUndeclared(element)) problems.push({ pos: element.nameStart, kind: 'error', msg: `The namespace prefix "${element.prefix}" is not declared - add xmlns:${element.prefix}="…"` });
         for (const attribute of element.attrs) {
-            if (attribute.uri === null) problems.push({ pos: attribute.nameStart, kind: 'error', msg: `The namespace prefix "${attribute.prefix}" is not declared - add xmlns:${attribute.prefix}="…"` });
+            if (isUndeclared(attribute)) problems.push({ pos: attribute.nameStart, kind: 'error', msg: `The namespace prefix "${attribute.prefix}" is not declared - add xmlns:${attribute.prefix}="…"` });
         }
     }
     return problems;
@@ -215,14 +227,16 @@ function getNamespaceProblems(model) {
 /**
  * Returns a warning for every id (id, xml:id) that is used a second time.
  * @param {XmlModel} model - the nodes of the code.
+ * @param {boolean} isTemplate - true for a template: an id that holds a placeholder stands for ids filled in later.
  * @returns {XmlProblem[]} the warnings.
  */
-function getDuplicateIdProblems(model) {
+function getDuplicateIdProblems(model, isTemplate) {
     const problems = [];
     const ids = new Set();
     for (const element of model.els) {
         for (const attribute of element.attrs) {
             if (attribute.name !== 'id' && attribute.name !== 'xml:id') continue;
+            if (isTemplate && hasTemplatePlaceholder(attribute.value)) continue;
             if (ids.has(attribute.value)) problems.push({ pos: attribute.valStart, kind: 'warn', msg: `The id "${attribute.value}" is used twice` });
             else ids.add(attribute.value);
         }

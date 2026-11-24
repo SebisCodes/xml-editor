@@ -1,13 +1,14 @@
 /**
- * The HTML of the rows of the element tree. Every row carries its node's id (data-n); the
+ * The HTML of the rows of the element tree. Every row carries the id of its node of the code
+ * (data-n; in the example view of a template every row of a node that stands for it); the
  * parts that can be edited in place carry the class "ed" and what they are (data-ed:
- * name, aname, aval, text, comment, cdata), attributes their place (data-a); the row
- * buttons carry their action (data-act).
+ * name, aname, aval, text, comment, cdata), attributes their place in the element of the code
+ * (data-a); the row buttons carry their action (data-act).
  */
 
 import { state, translate } from './state.js?v=2';
-import { escapeHtml } from './xml.js?v=6';
-import { getNodeText, getShownChildren, isLeaf, isOpen } from './nodes.js?v=3';
+import { escapeHtml } from './xml.js?v=7';
+import { getNodeText, getShownChildren, isLeaf, isOpen, getNodeSource, getCodeNode } from './nodes.js?v=4';
 
 const SHOW_MAX = 4000;                  // longer texts are shown shortened and edited in the code
 const DECLARATION_SHOW_MAX = 300;       // characters shown of a processing instruction or DOCTYPE
@@ -43,14 +44,20 @@ function renderShortText(text) {
 }
 
 /**
- * Returns the HTML of an element's attributes, each name and value editable.
+ * Returns the HTML of an element's attributes, each name and value editable; data-a is the
+ * attribute's place in the element of the code (an attribute the code lacks has none and is
+ * shown only).
  * @param {Object} element - a scanned element.
  * @returns {string} the attributes, each with a space before it.
  */
 function renderAttributes(element) {
-    return element.attrs.map((attribute, index) => {
+    const codeAttributes = getCodeNode(element).attrs;
+    return element.attrs.map(attribute => {
         const isDeclaration = attribute.name === 'xmlns' || attribute.name.startsWith('xmlns:');
-        return ` <span class="at${isDeclaration ? ' ns-decl' : ''}" data-a="${index}"><span class="a ed" data-ed="aname" data-a="${index}">${escapeHtml(attribute.name)}</span><span class="p">=</span><span class="p">${attribute.quote}</span><span class="s ed" data-ed="aval" data-a="${index}">${escapeHtml(attribute.value)}</span><span class="p">${attribute.quote}</span></span>`;
+        const index = codeAttributes.findIndex(codeAttribute => codeAttribute.name === attribute.name);
+        const place = index < 0 ? '' : ` data-a="${index}"`;
+        const editable = index < 0 ? '' : ' ed';
+        return ` <span class="at${isDeclaration ? ' ns-decl' : ''}"${place}><span class="a${editable}" data-ed="aname"${place}>${escapeHtml(attribute.name)}</span><span class="p">=</span><span class="p">${attribute.quote}</span><span class="s${editable}" data-ed="aval"${place}>${escapeHtml(attribute.value)}</span><span class="p">${attribute.quote}</span></span>`;
     }).join('');
 }
 
@@ -60,9 +67,10 @@ function renderAttributes(element) {
  * @returns {string} the list item, empty for a blank text.
  */
 export function renderRow(node) {
+    const codeId = getCodeNode(node).id;
     const classes = ['kn', node.type];
-    if (state.found.has(node.id)) classes.push('found');
-    const start = `<li class="${classes.join(' ')}" data-n="${node.id}" role="treeitem"`;
+    if (state.found.has(codeId)) classes.push('found');
+    const start = `<li class="${classes.join(' ')}" data-n="${codeId}" role="treeitem"`;
     if (node.type === 'text') return renderTextRow(node, start);
     if (node.type === 'comment' || node.type === 'cdata') return renderDelimitedRow(node, start);
     if (node.type === 'pi' || node.type === 'doctype') return renderDeclarationRow(node, start);
@@ -89,7 +97,7 @@ function renderTextRow(node, start) {
  * @returns {string} the row.
  */
 function renderDelimitedRow(node, start) {
-    const inner = state.code.slice(node.inner[0], node.inner[1]);
+    const inner = getNodeSource(node).slice(node.inner[0], node.inner[1]);
     const [opener, closer, className] = DELIMITERS[node.type];
     const isLong = inner.length > SHOW_MAX;
     const shown = escapeHtml(isLong ? inner.slice(0, SHOW_MAX) + ELLIPSIS : inner.trim());
@@ -103,7 +111,7 @@ function renderDelimitedRow(node, start) {
  * @returns {string} the row.
  */
 function renderDeclarationRow(node, start) {
-    const raw = state.code.slice(node.start, node.end);
+    const raw = getNodeSource(node).slice(node.start, node.end);
     const shown = escapeHtml(raw.length > DECLARATION_SHOW_MAX ? raw.slice(0, DECLARATION_SHOW_MAX) + ELLIPSIS : raw);
     return `${start}><div class="row"><span class="fold-space"></span><span class="content" data-no-i18n><span class="d">${shown}</span></span>${node.type === 'pi' ? renderItemButtons(REMOVE_ACTION) : ''}</div></li>`;
 }
@@ -134,7 +142,7 @@ function renderElementRow(element, start) {
  */
 function renderLeafEnd(element, textNode) {
     const text = textNode ? getNodeText(textNode) : '';
-    const slot = textNode ? `<span class="tx${text.length > SHOW_MAX ? '' : ' ed'}" data-ed="text" data-t="${textNode.id}">${renderShortText(text)}</span>`
+    const slot = textNode ? `<span class="tx${text.length > SHOW_MAX ? '' : ' ed'}" data-ed="text" data-t="${getCodeNode(textNode).id}">${renderShortText(text)}</span>`
         : `<span class="tx ed empty" data-ed="text" data-empty="${escapeHtml(translate('empty'))}"></span>`;
     if (element.selfClose && !textNode) return `<span class="p">/&gt;</span>${slot}`;
     return `<span class="p">&gt;</span>${slot}<span class="p">&lt;/</span><span class="k">${escapeHtml(element.name)}</span><span class="p">&gt;</span>`;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Order confirmation for {{name}} -->
+{{#hasOrder}}
+<order xmlns="urn:example:order" xmlns:pay="urn:example:payment" id="order-{{orderId}}" date="{{date}}">
+  <customer id="customer-{{customerId}}">
+    <name>{{name}}</name>
+    <street>{{street}}</street>
+    <postalCode>{{postalCode}}</postalCode>
+    <city>{{city}}</city>
+  </customer>
+  <items>
+    {{#items}}
+    <item id="item-{{itemId}}" quantity="{{quantity}}">{{title}}</item>
+    {{/items}}
+  </items>
+  <pay:total currency="{{currency}}">{{total}}</pay:total>
+  {{#hasNote}}<note>{{note}}</note>{{/hasNote}}
+  {{^hasNote}}<note>Thank you for your order.</note>{{/hasNote}}
+</order>
+{{/hasOrder}}

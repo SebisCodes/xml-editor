@@ -5,10 +5,12 @@
  */
 
 import { state, elements, services, isNarrow } from './state.js?v=2';
-import { escapeHtml } from './xml.js?v=6';
-import { highlight } from './xml-highlight.js?v=3';
-import { updateHistoryButtons } from './history.js?v=3';
-import { selectFromCursor } from './tree.js?v=3';
+import { escapeHtml } from './xml.js?v=7';
+import { highlight } from './xml-highlight.js?v=4';
+import { buildHighlightWithTemplateTags, convertTemplateTagsToBraces } from './template-tags.js?v=2';
+import { TEMPLATE_SYNTAX } from './xml-template.js?v=1';
+import { updateHistoryButtons } from './history.js?v=4';
+import { selectFromCursor } from './tree.js?v=4';
 
 const LINE_HEIGHT = 20;                 // pixels per row of the code
 const HIGHLIGHT_LIMIT = 600000;         // longer code is shown without colors
@@ -47,12 +49,13 @@ function moveWithCursor() {
 }
 
 /**
- * Draws the highlighting, the marks, the line numbers and the status line of the code.
+ * Draws the highlighting, the marks, the line numbers and the status line of the code. With a
+ * template syntax the code is highlighted in brace form and every tag is put back as written, inside the highlighting around it.
  * @returns {void}
  */
 export function renderCode() {
     const code = state.code;
-    elements.highlight.innerHTML = code.length < HIGHLIGHT_LIMIT ? highlight(code) + '\n' : escapeHtml(code) + '\n';
+    elements.highlight.innerHTML = code.length < HIGHLIGHT_LIMIT ? buildHighlightWithTemplateTags(highlight(convertTemplateTagsToBraces(code, TEMPLATE_SYNTAX)), TEMPLATE_SYNTAX, code) + '\n' : escapeHtml(code) + '\n';
     renderMarks();
     services.lineWrap.update(code);
     elements.status.textContent = getStatusText(code);

@@ -6,9 +6,10 @@
  */
 
 import { state, elements, services, findElement, translate } from './state.js?v=2';
-import { getMinifiedXml, getPlainText, convertToJson, convertToYaml } from './xml-format.js?v=3';
-import { readTreeNow } from './preview.js?v=3';
-import { isEditing, stopTreeEdit } from './tree-edit.js?v=3';
+import { getMinifiedXml, getPlainText, convertToJson, convertToYaml } from './xml-format.js?v=4';
+import { readTreeNow } from './preview.js?v=4';
+import { TEMPLATE_SYNTAX } from './xml-template.js?v=1';
+import { isEditing, stopTreeEdit } from './tree-edit.js?v=4';
 import { openDialog } from './dialogs.js?v=5';
 import { createZip } from './zip.js?v=4';
 import { saveDownload, getSafeName, copyToClipboard } from './util.js?v=3';
@@ -53,7 +54,7 @@ function getExport(format) {
     if (format === 'xml') return state.code;
     if (format === 'txt') return getPlainText(state.model);
     if (!parsed) return null;
-    if (format === 'min') return getMinifiedXml(state.model);
+    if (format === 'min') return getMinifiedXml(state.model, TEMPLATE_SYNTAX);
     return format === 'json' ? convertToJson(parsed) : convertToYaml(parsed);
 }
 

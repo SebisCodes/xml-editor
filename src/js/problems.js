@@ -5,10 +5,10 @@
  */
 
 import { state, elements, isNarrow } from './state.js?v=2';
-import { escapeHtml } from './xml.js?v=6';
-import { getLineIndex, getColumnIndex, showInCode } from './code-view.js?v=3';
-import { selectFromCursor } from './tree.js?v=3';
-import { showPane } from './layout.js?v=3';
+import { escapeHtml } from './xml.js?v=7';
+import { getLineIndex, getColumnIndex, showInCode } from './code-view.js?v=4';
+import { selectFromCursor } from './tree.js?v=4';
+import { showPane } from './layout.js?v=4';
 
 const PROBLEMS_SHOWN = 60;
 

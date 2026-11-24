@@ -80,10 +80,13 @@ Editor -> page (sent to the page around the editor, or to window.opener in its o
 - `xmleditor:closing` {id, name, unsaved, content?} - own window closes (always sent; content only when unsaved, id null before the first load)
 - `xmleditor:reload` {id, unsaved} - inside your page, F5 / Ctrl+R / Cmd+R do not reload the editor; ask the user yourself (Ctrl+W cannot be caught by a page)
 - `xmleditor:key-request` {reason:"missing"} - the editor has no AI key in this session yet
+- `xmleditor:ai-click` {request, id, name} - the user pressed the AI button (only with ai.dialog:"page"); answer within 300 ms
 
 `?embed=1&save=0` hides the editor's Save button (Ctrl+S still sends `xmleditor:save`) - for pages with their own Save button.
 
 `?theme=light`, `?theme=dark` or `?theme=auto` (with or without `embed`) fixes the color theme for that page load and hides the theme switch; the user's own stored choice is not changed. Other values are ignored.
+
+`?template=mustache` (or `?template=angle`) is for pages whose server fills placeholders into the XML before it is used: `{{name}}`, `{{#name}} … {{/name}}`, `{{^name}} … {{/name}}` (with `angle`: `<<name>>`, `<<?name>> … <</?name>>`), in text and in quoted attribute values. The tree shows the document filled with the examples the page sends (`xmleditor:template`, or `template` in `xmleditor:load`: placeholders with label, example, section state and list rows), and with the switch "Template" the tags as text; a placeholder without an example shows its label in brackets. The code view shows the tags as written, a "Placeholders" box below the code puts a tag at the cursor, saving and every export carry the template, the check reads each tag as text (sections around the root element count as text around it, an id or namespace prefix with a placeholder as filled later), and the list of problems reports a section left open, a stray end tag, an end tag in the wrong order and a tag with a sign outside the syntax. Format keeps every tag. The two values `mustache` and `angle` switch it on.
 
 Use language paths for editor links: `/de/` for German, `/fr/` for French, and `/` for English; the full list is above. Keep query options after the path, for example `/de/?embed=1` or `/fr/?viewer=1`. `/` leads to the browser's language, and a language picked in the menu holds for every giit.ch site. The AI prompt is always English.
 
@@ -91,7 +94,9 @@ Page -> editor (only from the page around the editor or the opener; after its fi
 - `xmleditor:load` {name, content, context?, hook?, ai?, from?, target?} - open your document; from:"ai" shows a note, target:"new" opens it as a separate document in the user's browser
 - `xmleditor:get` - answered with `xmleditor:save` of your document (id and content null before the first load)
 - `xmleditor:save` - press Save
-- `xmleditor:ai` {label?, prompt?, endpoint?, key?, base?} or {clear:true} - AI through your server
+- `xmleditor:ai` {label?, prompt?, endpoint?, key?, base?, answer?, dialog?} or {clear:true} or {decline:true, message?} - AI through your server
+- `xmleditor:ai-click` {request, handled} - the answer to ai-click: handled:true when your page shows its own AI dialog
+- `xmleditor:template` {placeholders, assets?} or {clear:true} - with ?template=: placeholders with examples for the example view of the tree (kept in memory only)
 
 Your document is the one your page loaded (or opened with ?src=). change, save, closing and get are only ever about it - never about other documents in the user's browser, also when the user opens them in the editor. A load replaces only a document that came from your page before (same name and origin), never the user's own; the AI settings and the hook from load apply only while your document is open. Your document is kept in memory only - it is never stored in the user's browser and is gone when the editor closes.
 
@@ -111,6 +116,8 @@ Fields left out keep their value; `{type:"xmleditor:ai", clear:true}` ends it. O
     {"editor":"xml","target":"current"|"new","name":"<short name>","content":"<the complete XML>"}
 
 An AI that cannot send HTTP requests answers with a link instead, which the user pastes into the editor. When your server has a result, your page sends `{type:"xmleditor:load", name, content, from:"ai", target}`: target "current" (or none) puts it into your document (the user sees a note; Undo takes it back; it counts as not yet saved), target "new" opens a separate document that stays in the user's browser - its edits and Save never go to your page. The key stays valid in the editor for the whole session; only when it has none at "Copy prompt", the editor sends `{type:"xmleditor:key-request", reason:"missing"}`; answer with an `xmleditor:ai` message within 5 seconds.
+
+Your own parts (in `ai` of load or in `xmleditor:ai`): `answer:"<text>"` replaces the prompt's "HOW TO ANSWER" part with your text (fenced under "HOW TO ANSWER FROM THE WEBSITE <your host>"; the prompt then carries no endpoint and no key, and no key-request is sent), `answer:"none"` leaves the part out, `answer:""` gives the editor's part back (at most 4000 characters). `dialog:"page"`: a press on the AI button while your document is open sends `{type:"xmleditor:ai-click", request, id, name}` (no content) and waits 300 ms; answer `{type:"xmleditor:ai-click", request, handled:true}` with the same request and open your own dialog - `handled:false` or no answer opens the editor's dialog; `dialog:"editor"` or `clear` ends it. To decline a key-request, answer `{type:"xmleditor:ai", decline:true, message}`: the wait ends at once, the prompt asks for a link, and after copying the user sees "<your host>: <message>" as plain text on one line (at most 200 characters, in your page's language). In every prompt the document stands in a code fence longer than any run of backticks in it, below a line that marks it as data.
 
 Safety built in: key, endpoint and prompt are only taken from the page around the editor (after its first message, only from that origin), kept in memory, never stored and never sent by the editor itself - the key only goes into the prompt the user copies. The endpoint must be https on your page's own host (with or without www.) or a subdomain of it; others are refused. Keys must be 16-512 characters of A-Z a-z 0-9 . _ ~ + / = -.
 

@@ -5,8 +5,8 @@
  */
 
 import { services, findElement, findElements } from './state.js?v=2';
-import { undo, redo } from './history.js?v=3';
-import { createFromMenu } from './documents.js?v=3';
+import { undo, redo } from './history.js?v=4';
+import { createFromMenu } from './documents.js?v=4';
 import { openDialog } from './dialogs.js?v=5';
 
 const newButton = findElement('#btn-new');
